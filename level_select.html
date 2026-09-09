@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+<title>Level Select - Perodua Puzzle Game</title>
+<style>
+
+* { box-sizing:border-box; -webkit-tap-highlight-color:transparent; -webkit-touch-callout:none; }
+
+html, body{
+    margin:0; padding:0;
+    font-family:Arial, sans-serif;
+    -webkit-user-select:none; user-select:none;
+    background:#1f5c1a;
+    color:#f3ead0;
+}
+
+#banner{
+    width:100%;
+    height:min(30vh, 240px);
+    background:url(theme_banner.jpg) center 30%/cover no-repeat;
+    position:relative;
+    box-shadow:0 6px 20px rgba(0,0,0,0.45);
+}
+#banner::after{
+    content:"";
+    position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(0,0,0,0.05), rgba(10,20,8,0.75));
+}
+#bannerTitle{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    z-index:2;
+}
+#bannerTitle h1{
+    margin:0;
+    font-size:clamp(22px,4vw,40px);
+    font-weight:900;
+    color:#f0d878;
+    text-shadow:3px 3px 0 #2a1c10, 0 0 20px rgba(0,0,0,0.6);
+    letter-spacing:1px;
+    text-align:center;
+}
+
+#body{
+    padding:30px 20px 60px 20px;
+    display:flex; flex-direction:column; align-items:center;
+    background:
+        radial-gradient(circle at 15% 10%, rgba(240,216,120,0.08) 0%, transparent 40%),
+        linear-gradient(180deg, #2a6b22 0%, #1c4a17 55%, #123310 100%);
+}
+
+#subtitle{
+    color:#dff0c8;
+    font-size:14px;
+    margin-bottom:26px;
+    text-align:center;
+    max-width:560px;
+    text-shadow:1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+    gap:22px;
+    max-width:1100px;
+    width:100%;
+}
+
+.card{
+    background:linear-gradient(180deg, #6b4a2e, #4a3220);
+    border:4px solid #2a1c10;
+    border-radius:10px;
+    overflow:hidden;
+    text-decoration:none;
+    color:#f3ead0;
+    display:block;
+    box-shadow:0 6px 18px rgba(0,0,0,0.45), inset 0 2px 0 rgba(255,255,255,0.12);
+    transition:transform 0.12s ease;
+    cursor:pointer;
+}
+.card:hover{ transform:translateY(-4px); }
+.card:active{ transform:scale(0.97); }
+
+.thumbWrap{
+    background:#1c130a;
+    padding:10px;
+}
+.thumb{ width:100%; aspect-ratio:4/3; object-fit:contain; display:block; border-radius:4px; }
+
+.cardBody{ padding:12px 14px 16px 14px; text-align:center; }
+.cardTitle{ font-size:16px; font-weight:900; margin:0 0 4px 0; text-shadow:2px 2px 0 #2a1c10; }
+.cardSub{ font-size:11.5px; color:#e0c98a; }
+
+.card.c1 .cardTitle{ color:#9fdcff; }
+.card.c2 .cardTitle{ color:#ffcf94; }
+.card.c3 .cardTitle{ color:#9dffce; }
+.card.c4 .cardTitle{ color:#e0bfff; }
+.card.c5 .cardTitle{ color:#a8f5ee; }
+
+#backBtn{
+    margin-top:34px;
+    width:220px; height:58px;
+    border:4px solid #2a1c10;
+    border-radius:10px;
+    background:linear-gradient(180deg,#5c86b8,#3a5f8a);
+    color:#f3ead0;
+    font-size:17px; font-weight:900;
+    cursor:pointer;
+    box-shadow:0 4px 0 #1c2c3f, inset 0 2px 0 rgba(255,255,255,0.15);
+    touch-action:none;
+}
+#backBtn:active{ transform:translateY(3px); box-shadow:inset 0 2px 0 rgba(255,255,255,0.15); }
+
+</style>
+</head>
+<body>
+
+<div id="banner">
+    <div id="bannerTitle"><h1>🧩 LEVEL SELECT</h1></div>
+</div>
+
+<div id="body">
+    <div id="subtitle">Choose a component to reassemble. Each puzzle has its own difficulty settings, timer, and background sound.</div>
+
+    <div class="grid">
+        <a class="card c1" href="puzzle_crankshaft.html">
+            <div class="thumbWrap"><img class="thumb" src="Picture2.png" alt="Crankshaft"></div>
+            <div class="cardBody">
+                <div class="cardTitle">Crankshaft</div>
+                <div class="cardSub">9 – 25 pieces</div>
+            </div>
+        </a>
+
+        <a class="card c2" href="puzzle_engine_block.html">
+            <div class="thumbWrap"><img class="thumb" src="Picture6.png" alt="Engine Block"></div>
+            <div class="cardBody">
+                <div class="cardTitle">Engine Block</div>
+                <div class="cardSub">9 – 25 pieces</div>
+            </div>
+        </a>
+
+        <a class="card c3" href="puzzle_cylinder_head.html">
+            <div class="thumbWrap"><img class="thumb" src="Picture5.png" alt="Cylinder Head"></div>
+            <div class="cardBody">
+                <div class="cardTitle">Cylinder Head</div>
+                <div class="cardSub">9 – 25 pieces</div>
+            </div>
+        </a>
+
+        <a class="card c4" href="puzzle_steering_knuckle.html">
+            <div class="thumbWrap"><img class="thumb" src="Picture4.png" alt="Steering Knuckle"></div>
+            <div class="cardBody">
+                <div class="cardTitle">Steering Knuckle</div>
+                <div class="cardSub">9 – 25 pieces</div>
+            </div>
+        </a>
+
+        <a class="card c5" href="puzzle_timing_cover.html">
+            <div class="thumbWrap"><img class="thumb" src="Picture3.png" alt="Timing Cover"></div>
+            <div class="cardBody">
+                <div class="cardTitle">Timing Cover</div>
+                <div class="cardSub">9 – 25 pieces</div>
+            </div>
+        </a>
+    </div>
+
+    <button id="backBtn">← BACK TO MENU</button>
+</div>
+
+<script>
+document.addEventListener("contextmenu", e=>e.preventDefault());
+document.getElementById("backBtn").addEventListener("click", ()=>{
+    window.location.href = "index.html";
+});
+</script>
+
+</body>
+</html>

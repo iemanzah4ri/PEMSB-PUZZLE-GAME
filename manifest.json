@@ -1,0 +1,23 @@
+{
+  "name": "Component Puzzle Challenge",
+  "short_name": "Component Puzzles",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#0a0e16",
+  "theme_color": "#0a0e16",
+  "description": "Offline drag-and-drop puzzles for factory components.",
+  "icons": [
+    {
+      "src": "Picture2.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "Picture2.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Perodua Puzzle Game</title>
+<style>
+
+* { box-sizing:border-box; -webkit-tap-highlight-color:transparent; -webkit-touch-callout:none; }
+
+html, body{
+    margin:0; padding:0; width:100%; height:100%;
+    overflow:hidden; overscroll-behavior:none;
+    background:#1f5c1a;
+    font-family:Arial, sans-serif;
+    -webkit-user-select:none; user-select:none; touch-action:none;
+}
+
+#stage{
+    position:fixed; inset:0;
+    display:flex; align-items:center; justify-content:center;
+}
+
+#menuFrame{
+    position:relative;
+    width:100%;
+    max-width:1376px;
+    aspect-ratio:1376/768;
+    margin:0 auto;
+    box-shadow:0 10px 50px rgba(0,0,0,0.6);
+}
+
+#menuFrame img{
+    width:100%; height:100%;
+    display:block;
+    object-fit:fill;
+    -webkit-user-drag:none;
+    user-select:none;
+    pointer-events:none;
+}
+
+.hotspot{
+    position:absolute;
+    border:2px solid transparent;
+    border-radius:6px;
+    background:transparent;
+    cursor:pointer;
+    padding:0;
+    -webkit-tap-highlight-color:transparent;
+    touch-action:none;
+}
+.hotspot:hover, .hotspot:focus-visible{
+    border-color:rgba(255,255,255,0.85);
+    box-shadow:0 0 16px rgba(255,255,255,0.55), inset 0 0 12px rgba(255,255,255,0.25);
+    background:rgba(255,255,255,0.08);
+}
+.hotspot:active{
+    background:rgba(255,255,255,0.2);
+    transform:scale(0.98);
+}
+
+/* QUIT confirmation toast */
+#quitToast{
+    display:none;
+    position:fixed; inset:0; z-index:500;
+    background:rgba(0,0,0,0.75);
+    align-items:center; justify-content:center;
+}
+#quitToast.show{ display:flex; }
+#quitToastBox{
+    background:linear-gradient(180deg, #6b4a2e, #3a2414);
+    border:4px solid #2a1c10;
+    border-radius:10px;
+    padding:28px 34px;
+    text-align:center;
+    color:#f3ead0;
+    max-width:88vw;
+    box-shadow:0 10px 30px rgba(0,0,0,0.6);
+}
+#quitToastBox h2{ margin:0 0 10px 0; font-size:22px; color:#f0d878; text-shadow:2px 2px 0 #2a1c10; }
+#quitToastBox p{ margin:0 0 18px 0; font-size:14px; line-height:1.5em; }
+#quitToastBox button{
+    width:160px; height:50px;
+    border:3px solid #1c2c3f;
+    border-radius:8px;
+    background:linear-gradient(180deg,#5c86b8,#3a5f8a);
+    color:#f3ead0; font-weight:900; font-size:15px;
+    cursor:pointer;
+}
+#quitToastBox button:active{ transform:translateY(2px); }
+
+/* No-saved-game toast (Continue with nothing saved) */
+#infoToast{
+    display:none;
+    position:fixed;
+    bottom:6%;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:400;
+    background:rgba(20,12,6,0.92);
+    border:2px solid #f0d878;
+    border-radius:10px;
+    padding:12px 22px;
+    color:#f3ead0;
+    font-size:14px;
+    font-weight:700;
+    text-align:center;
+    box-shadow:0 6px 20px rgba(0,0,0,0.5);
+}
+#infoToast.show{ display:block; }
+
+</style>
+</head>
+<body>
+
+<div id="stage">
+    <div id="menuFrame">
+        <img src="theme_bg.jpg" alt="Perodua Puzzle Game">
+
+        <button class="hotspot" id="btnNewGame"     style="left:22.89%; top:67.71%; width:15.62%; height:7.55%;" title="New Game"></button>
+        <button class="hotspot" id="btnContinue"    style="left:42.73%; top:67.71%; width:15.84%; height:8.07%;" title="Continue"></button>
+        <button class="hotspot" id="btnSettings"    style="left:62.35%; top:67.71%; width:15.41%; height:7.55%;" title="Settings"></button>
+        <button class="hotspot" id="btnLevelSelect" style="left:22.67%; top:79.69%; width:25.29%; height:7.03%;" title="Level Select"></button>
+        <button class="hotspot" id="btnQuit"        style="left:64.53%; top:79.69%; width:10.47%; height:7.03%;" title="Quit"></button>
+    </div>
+</div>
+
+<div id="infoToast">No saved game yet — starting Level Select</div>
+
+<div id="quitToast">
+    <div id="quitToastBox">
+        <h2>👋 Thanks for playing!</h2>
+        <p>You can close this browser tab now.</p>
+        <button id="quitToastCloseBtn">OK</button>
+    </div>
+</div>
+
+<script>
+
+document.addEventListener("contextmenu", e=>e.preventDefault());
+document.addEventListener("gesturestart", e=>e.preventDefault());
+document.addEventListener("gesturechange", e=>e.preventDefault());
+
+let lastTouchEnd = 0;
+document.addEventListener("touchend", (e)=>{
+    const now = Date.now();
+    if(now - lastTouchEnd <= 300) e.preventDefault();
+    lastTouchEnd = now;
+}, {passive:false});
+
+function goto(url){ window.location.href = url; }
+
+document.getElementById("btnNewGame").addEventListener("click", ()=> goto("level_select.html"));
+document.getElementById("btnLevelSelect").addEventListener("click", ()=> goto("level_select.html"));
+document.getElementById("btnSettings").addEventListener("click", ()=> goto("settings.html"));
+
+document.getElementById("btnContinue").addEventListener("click", ()=>{
+    const file = localStorage.getItem("perodua_lastPuzzleFile");
+    const diff = localStorage.getItem("perodua_lastPuzzleDiff");
+    if(file && diff){
+        goto(file + "?diff=" + encodeURIComponent(diff) + "&auto=1");
+    } else {
+        document.getElementById("infoToast").classList.add("show");
+        setTimeout(()=> goto("level_select.html"), 1400);
+    }
+});
+
+document.getElementById("btnQuit").addEventListener("click", ()=>{
+    window.close();
+    // if the tab is still open after a script-close attempt (most browsers
+    // block closing a tab that wasn't opened by script), show a fallback.
+    setTimeout(()=>{
+        document.getElementById("quitToast").classList.add("show");
+    }, 300);
+});
+
+document.getElementById("quitToastCloseBtn").addEventListener("click", ()=>{
+    document.getElementById("quitToast").classList.remove("show");
+});
+
+</script>
+</body>
+</html>
