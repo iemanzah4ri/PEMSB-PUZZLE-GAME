@@ -357,6 +357,8 @@ let audioCtx = null;
 let musicGain = null;
 let arpInterval = null;
 let muted = localStorage.getItem("perodua_muted") === "true";
+let soundtrack = null;
+let soundtrackStarted = false;
 
 function initAudio(){
     if(audioCtx) return;
@@ -364,6 +366,37 @@ function initAudio(){
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         startAmbientMusic();
     }catch(e){ console.warn("Audio unavailable:", e); }
+}
+
+function initSoundtrack(){
+    if(soundtrack) return;
+    soundtrack = new Audio("soundtrack.mp3");
+    soundtrack.loop = true;
+    soundtrack.preload = "auto";
+    soundtrack.volume = 0.45;
+    soundtrack.muted = muted;
+    window.__soundtrackPlayer = soundtrack;
+    soundtrack.addEventListener("error", () => {
+        console.warn("Background soundtrack failed to load.");
+    });
+}
+
+function updateSoundtrackState(){
+    if(!soundtrack) return;
+    soundtrack.muted = muted;
+    if(muted){
+        soundtrack.pause();
+        return;
+    }
+    if(soundtrackStarted){
+        soundtrack.play().catch(() => {});
+    }
+}
+
+function startBackgroundMusic(){
+    initSoundtrack();
+    soundtrackStarted = true;
+    updateSoundtrackState();
 }
 
 function startAmbientMusic(){
@@ -426,11 +459,23 @@ document.getElementById("muteBtn").addEventListener("click", ()=>{
     muted = !muted;
     localStorage.setItem("perodua_muted", muted ? "true" : "false");
     if(musicGain) musicGain.gain.value = muted ? 0 : 0.05;
+    updateSoundtrackState();
     document.getElementById("muteBtn").innerText = muted ? "🔇" : "🔊";
 });
 
 document.getElementById("menuBtn").addEventListener("click", ()=>{
+    if(soundtrack){
+        soundtrack.pause();
+        soundtrack.currentTime = 0;
+    }
     window.location.href = "index.html";
+});
+
+window.addEventListener("beforeunload", ()=>{
+    if(soundtrack){
+        soundtrack.pause();
+        soundtrack.currentTime = 0;
+    }
 });
 
 if ("serviceWorker" in navigator) {
@@ -759,6 +804,7 @@ function parseBestSeconds(str){
 
 document.getElementById("startBtn").addEventListener("click", ()=>{
     initAudio();
+    startBackgroundMusic();
     localStorage.setItem("perodua_lastPuzzleFile", window.location.pathname.split("/").pop());
     localStorage.setItem("perodua_lastPuzzleDiff", targetPieces);
     document.getElementById("startScreen").style.display = "none";

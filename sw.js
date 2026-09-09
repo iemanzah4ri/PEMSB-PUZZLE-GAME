@@ -17,6 +17,7 @@ const OFFLINE_PAGES = [
 
 const OFFLINE_ASSETS = [
     "./manifest.json",
+    "./soundtrack.mp3",
     "./theme_bg.jpg",
     "./theme_banner.jpg",
     "./Picture2.png",
