@@ -1,4 +1,4 @@
-const CACHE_NAME = "component-puzzles-v1";
+const CACHE_NAME = "component-puzzles-v2";
 const OFFLINE_PAGES = [
     "index.html",
     "level_select.html",
