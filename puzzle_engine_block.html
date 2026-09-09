@@ -379,6 +379,20 @@ function initSoundtrack(){
     });
 }
 
+function resumeSoundtrackPlayback(){
+    if(!soundtrack || muted) return;
+    const playPromise = soundtrack.play();
+    if(playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(() => {
+            setTimeout(() => {
+                if(!muted && soundtrack) {
+                    soundtrack.play().catch(() => {});
+                }
+            }, 200);
+        });
+    }
+}
+
 function updateSoundtrackState(){
     if(!soundtrack) return;
     soundtrack.muted = muted;
@@ -387,14 +401,28 @@ function updateSoundtrackState(){
         return;
     }
     if(soundtrackStarted){
-        soundtrack.play().catch(() => {});
+        resumeSoundtrackPlayback();
     }
+}
+
+function setSoundtrackSessionState(isPlaying){
+    sessionStorage.setItem("perodua_soundtrack_playing", isPlaying ? "true" : "false");
 }
 
 function startBackgroundMusic(){
     initSoundtrack();
     soundtrackStarted = true;
+    setSoundtrackSessionState(!muted);
     updateSoundtrackState();
+}
+
+function restoreBackgroundMusicIfNeeded(){
+    const shouldPlay = sessionStorage.getItem("perodua_soundtrack_playing") === "true" && localStorage.getItem("perodua_muted") !== "true";
+    if(shouldPlay){
+        initSoundtrack();
+        soundtrackStarted = true;
+        resumeSoundtrackPlayback();
+    }
 }
 
 function startAmbientMusic(){
@@ -457,23 +485,13 @@ document.getElementById("muteBtn").addEventListener("click", ()=>{
     muted = !muted;
     localStorage.setItem("perodua_muted", muted ? "true" : "false");
     if(musicGain) musicGain.gain.value = muted ? 0 : 0.05;
+    setSoundtrackSessionState(!muted);
     updateSoundtrackState();
     document.getElementById("muteBtn").innerText = muted ? "🔇" : "🔊";
 });
 
 document.getElementById("menuBtn").addEventListener("click", ()=>{
-    if(soundtrack){
-        soundtrack.pause();
-        soundtrack.currentTime = 0;
-    }
     window.location.href = "index.html";
-});
-
-window.addEventListener("beforeunload", ()=>{
-    if(soundtrack){
-        soundtrack.pause();
-        soundtrack.currentTime = 0;
-    }
 });
 
 if ("serviceWorker" in navigator) {
@@ -897,6 +915,7 @@ img.onload = ()=>{
     const startBtn = document.getElementById("startBtn");
     startBtn.disabled = false;
     startBtn.innerText = "START PUZZLE";
+    restoreBackgroundMusicIfNeeded();
     if(urlAuto === "1"){
         startBtn.click();
     }

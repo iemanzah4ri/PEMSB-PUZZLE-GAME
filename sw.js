@@ -24,7 +24,8 @@ const OFFLINE_ASSETS = [
     "./Picture3.png",
     "./Picture4.png",
     "./Picture5.png",
-    "./Picture6.png"
+    "./Picture6.png",
+    "./soundtrack.mp3"
 ];
 
 const APP_SHELL = [...new Set([...OFFLINE_PAGES, ...OFFLINE_ASSETS])].map(path => {

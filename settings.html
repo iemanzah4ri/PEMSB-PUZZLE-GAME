@@ -181,6 +181,29 @@ document.getElementById("backBtn").addEventListener("click", ()=>{
     window.location.href = "index.html";
 });
 
+function resumeMenuTrack() {
+    const shouldResumeMenuTrack = sessionStorage.getItem("perodua_soundtrack_playing") === "true" && localStorage.getItem("perodua_muted") !== "true";
+    if (!shouldResumeMenuTrack) return;
+
+    const menuTrack = new Audio("soundtrack.mp3");
+    menuTrack.loop = true;
+    menuTrack.volume = 0.45;
+    menuTrack.preload = "auto";
+    window.__soundtrackPlayer = menuTrack;
+
+    const playPromise = menuTrack.play();
+    if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(() => {
+            setTimeout(() => menuTrack.play().catch(() => {}), 200);
+        });
+    }
+}
+
+document.addEventListener("pointerdown", resumeMenuTrack, { once: true });
+document.querySelectorAll("button, a").forEach((el) => {
+    el.addEventListener("click", resumeMenuTrack, { once: true });
+});
+
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
         navigator.serviceWorker.register("./sw.js").catch(error => {
