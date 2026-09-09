@@ -247,8 +247,7 @@ html, body{
     touch-action:none;
 }
 .winBtn.primary{ background:#00e08c; color:#06210f; box-shadow:0 4px 0 #007b4d; }
-.winBtn.secondary{ background:#6b5238; color:#f3ead0; box-shadow:0 4px 0 #2a1c10; }
-.winBtn:active{ transform:translateY(3px); box-shadow:none; }
+.winBtn.secondary{ background:#6b5238; color:#f3ead0; box-shadow:0 4px 0 #2a1c10; }.winBtn.tertiary{ background:linear-gradient(180deg,#5c86b8,#3a5f8a); color:#f3ead0; box-shadow:0 4px 0 #1c2c3f; }.winBtn:active{ transform:translateY(3px); box-shadow:none; }
 
 canvas#confetti{ position:fixed; inset:0; z-index:190; pointer-events:none; }
 
@@ -318,6 +317,7 @@ canvas#confetti{ position:fixed; inset:0; z-index:190; pointer-events:none; }
         <div class="winBtnRow">
             <button class="winBtn primary" id="playAgainBtn">PLAY AGAIN</button>
             <button class="winBtn secondary" id="changeDiffBtn">CHANGE DIFFICULTY</button>
+            <button class="winBtn tertiary" id="mainMenuBtn">MAIN MENU</button>
         </div>
     </div>
 </div>
@@ -778,6 +778,11 @@ document.getElementById("changeDiffBtn").addEventListener("click", ()=>{
     document.getElementById("gameScreen").classList.remove("show");
     document.getElementById("startScreen").style.display = "flex";
     showBestTimes();
+});
+
+document.getElementById("mainMenuBtn").addEventListener("click", ()=>{
+    document.getElementById("winOverlay").classList.remove("show");
+    window.location.href = "index.html";
 });
 
 document.getElementById("previewToggleBtn").addEventListener("click", ()=>{
