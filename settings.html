@@ -180,6 +180,14 @@ document.getElementById("resetBtn").addEventListener("click", ()=>{
 document.getElementById("backBtn").addEventListener("click", ()=>{
     window.location.href = "index.html";
 });
+
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch(error => {
+            console.warn("Service worker registration failed:", error);
+        });
+    });
+}
 </script>
 
 </body>
